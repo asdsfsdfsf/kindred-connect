@@ -6,16 +6,15 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   HelpCircle,
   MessageSquare,
-  Book,
   Video,
   Mail,
   ExternalLink,
-  Search,
   ChevronRight,
   Sparkles,
   Zap,
   Settings,
   CreditCard,
+  Play,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -46,7 +45,6 @@ const faqCategories = [
     title: "Billing & Credits",
     questions: [
       { q: "How do credits work?", a: "Credits are used for video/image generation. Different actions use different amounts." },
-      { q: "Can I get a refund?", a: "Yes, we offer refunds within 14 days if unused." },
       { q: "Do unused credits roll over?", a: "Credits reset each billing cycle but purchased packs don't expire." },
     ],
   },
@@ -62,14 +60,16 @@ const faqCategories = [
   },
 ];
 
-const quickLinks = [
-  { title: "Video Tutorials", icon: Video, description: "Step-by-step guides", href: "#" },
-  { title: "Documentation", icon: Book, description: "Detailed guides & API docs", href: "#" },
-  { title: "Community Forum", icon: MessageSquare, description: "Connect with other creators", href: "#" },
+const videoTutorials = [
+  { id: 1, title: "Getting Started with StoryShort", duration: "5:32" },
+  { id: 2, title: "Creating Your First AI Video", duration: "8:15" },
+  { id: 3, title: "Using Visual Styles Effectively", duration: "6:48" },
+  { id: 4, title: "Voice Selection & Customization", duration: "4:22" },
+  { id: 5, title: "Series Automation Tutorial", duration: "10:05" },
+  { id: 6, title: "Advanced Prompting Techniques", duration: "7:30" },
 ];
 
 const Support = () => {
-  const [searchQuery, setSearchQuery] = useState("");
   const [expandedFaq, setExpandedFaq] = useState<string | null>(null);
 
   return (
@@ -82,46 +82,44 @@ const Support = () => {
           </div>
           <h1 className="text-3xl font-bold text-foreground mb-2">How can we help?</h1>
           <p className="text-muted-foreground max-w-md mx-auto">
-            Search our knowledge base or get in touch with our support team
+            Browse our tutorials or get in touch with our support team
           </p>
         </div>
 
-        {/* Search */}
-        <div className="max-w-2xl mx-auto mb-12">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input
-              placeholder="Search for help..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 h-14 text-lg bg-secondary/50 border-border rounded-xl"
-            />
-          </div>
-        </div>
-
-        {/* Quick Links */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          {quickLinks.map((link, index) => (
-            <Card
-              key={link.title}
-              className="bg-card border-border hover:border-primary/50 transition-all duration-300 cursor-pointer group hover:scale-[1.02]"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <CardContent className="p-6 flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                  <link.icon className="h-6 w-6 text-primary" />
+        {/* Video Tutorials Section */}
+        <Card className="bg-card border-border mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Video className="h-5 w-5 text-primary" />
+              Video Tutorials
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {videoTutorials.map((tutorial, index) => (
+                <div
+                  key={tutorial.id}
+                  className="group relative rounded-xl overflow-hidden bg-secondary/30 border border-border hover:border-primary/50 transition-all duration-300 cursor-pointer hover:scale-[1.02]"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center relative">
+                    <div className="w-14 h-14 rounded-full bg-background/80 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <Play className="h-6 w-6 text-primary ml-1" />
+                    </div>
+                    <div className="absolute bottom-2 right-2 px-2 py-1 rounded bg-background/80 text-xs font-medium text-foreground">
+                      {tutorial.duration}
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h4 className="font-medium text-foreground group-hover:text-primary transition-colors">
+                      {tutorial.title}
+                    </h4>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
-                    {link.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">{link.description}</p>
-                </div>
-                <ExternalLink className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* FAQ Section */}
@@ -194,22 +192,6 @@ const Support = () => {
                 <p className="text-xs text-center text-muted-foreground">
                   Average response time: 2-4 hours
                 </p>
-              </CardContent>
-            </Card>
-
-            {/* Live Chat Card */}
-            <Card className="bg-card border-border">
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-green-500/20 flex items-center justify-center">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-                </div>
-                <h3 className="font-semibold text-foreground mb-2">Live Chat Available</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Chat with our team in real-time
-                </p>
-                <Button variant="outline" className="w-full border-green-500/30 text-green-400 hover:bg-green-500/10">
-                  Start Live Chat
-                </Button>
               </CardContent>
             </Card>
           </div>

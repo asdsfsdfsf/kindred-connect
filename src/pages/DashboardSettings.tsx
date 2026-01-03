@@ -6,18 +6,41 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   User,
-  Bell,
   Shield,
   Palette,
   Globe,
   Trash2,
+  Clock,
 } from "lucide-react";
+
+const timezones = [
+  { value: "UTC-12", label: "UTC-12:00 (Baker Island)" },
+  { value: "UTC-8", label: "UTC-08:00 (Pacific Time)" },
+  { value: "UTC-7", label: "UTC-07:00 (Mountain Time)" },
+  { value: "UTC-6", label: "UTC-06:00 (Central Time)" },
+  { value: "UTC-5", label: "UTC-05:00 (Eastern Time)" },
+  { value: "UTC+0", label: "UTC+00:00 (London)" },
+  { value: "UTC+1", label: "UTC+01:00 (Paris, Berlin)" },
+  { value: "UTC+2", label: "UTC+02:00 (Cairo, Athens)" },
+  { value: "UTC+3", label: "UTC+03:00 (Moscow)" },
+  { value: "UTC+5:30", label: "UTC+05:30 (Mumbai)" },
+  { value: "UTC+8", label: "UTC+08:00 (Singapore, Beijing)" },
+  { value: "UTC+9", label: "UTC+09:00 (Tokyo)" },
+  { value: "UTC+10", label: "UTC+10:00 (Sydney)" },
+];
 
 const DashboardSettings = () => {
   return (
     <DashboardLayout>
-      <div className="p-8 max-w-4xl">
+      <div className="p-8 max-w-4xl animate-fade-in">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground">Settings</h1>
@@ -38,16 +61,6 @@ const DashboardSettings = () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="flex items-center gap-6">
-              <div className="h-20 w-20 rounded-full bg-primary/20 flex items-center justify-center">
-                <span className="text-2xl font-bold text-primary">JD</span>
-              </div>
-              <div>
-                <Button variant="outline" size="sm">Change Avatar</Button>
-                <p className="text-xs text-muted-foreground mt-2">JPG, PNG or GIF. Max 2MB.</p>
-              </div>
-            </div>
-            <Separator />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
@@ -72,44 +85,6 @@ const DashboardSettings = () => {
           </CardContent>
         </Card>
 
-        {/* Notifications Section */}
-        <Card className="bg-card border-border mb-6">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <Bell className="h-5 w-5 text-primary" />
-              <div>
-                <CardTitle className="text-lg">Notifications</CardTitle>
-                <CardDescription>Manage your notification preferences</CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-foreground">Email Notifications</p>
-                <p className="text-sm text-muted-foreground">Receive email updates about your projects</p>
-              </div>
-              <Switch defaultChecked />
-            </div>
-            <Separator />
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-foreground">Marketing Emails</p>
-                <p className="text-sm text-muted-foreground">Receive tips, tutorials and product updates</p>
-              </div>
-              <Switch />
-            </div>
-            <Separator />
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-foreground">Video Completion Alerts</p>
-                <p className="text-sm text-muted-foreground">Get notified when your video is ready</p>
-              </div>
-              <Switch defaultChecked />
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Appearance Section */}
         <Card className="bg-card border-border mb-6">
           <CardHeader>
@@ -129,38 +104,35 @@ const DashboardSettings = () => {
               </div>
               <Switch defaultChecked />
             </div>
-            <Separator />
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-foreground">Compact View</p>
-                <p className="text-sm text-muted-foreground">Show more content with less spacing</p>
-              </div>
-              <Switch />
-            </div>
           </CardContent>
         </Card>
 
-        {/* Language Section */}
+        {/* Timezone Section */}
         <Card className="bg-card border-border mb-6">
           <CardHeader>
             <div className="flex items-center gap-3">
               <Globe className="h-5 w-5 text-primary" />
               <div>
-                <CardTitle className="text-lg">Language & Region</CardTitle>
-                <CardDescription>Set your language and timezone</CardDescription>
+                <CardTitle className="text-lg">Timezone</CardTitle>
+                <CardDescription>Set your preferred timezone</CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Language</Label>
-                <Input defaultValue="English (US)" readOnly className="bg-muted" />
-              </div>
-              <div className="space-y-2">
-                <Label>Timezone</Label>
-                <Input defaultValue="UTC-8 (Pacific Time)" readOnly className="bg-muted" />
-              </div>
+            <div className="flex items-center gap-3">
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              <Select defaultValue="UTC-8">
+                <SelectTrigger className="w-full max-w-md">
+                  <SelectValue placeholder="Select timezone" />
+                </SelectTrigger>
+                <SelectContent>
+                  {timezones.map((tz) => (
+                    <SelectItem key={tz.value} value={tz.value}>
+                      {tz.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </CardContent>
         </Card>
@@ -177,12 +149,19 @@ const DashboardSettings = () => {
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-foreground">Two-Factor Authentication</p>
-                <p className="text-sm text-muted-foreground">Add an extra layer of security</p>
+            <div className="flex items-center justify-between p-4 rounded-lg bg-secondary/30">
+              <div className="flex items-center gap-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-medium text-foreground">Two-Factor Authentication</p>
+                    <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-xs font-medium">
+                      Coming Soon
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">Add an extra layer of security to your account</p>
+                </div>
               </div>
-              <Button variant="outline" size="sm">Enable</Button>
+              <Switch disabled />
             </div>
             <Separator />
             <div className="flex items-center justify-between">

@@ -11,10 +11,10 @@ import {
   Edit3,
   Trash2,
   Copy,
-  MoreVertical,
   Clock,
   Tag,
   Sparkles,
+  Coins,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -59,6 +59,8 @@ const scriptPrompts = [
   "Generate a story about a mysterious adventure",
   "Write about the benefits of meditation",
 ];
+
+const CREDITS_PER_SCRIPT = 10;
 
 const Scripts = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -124,6 +126,10 @@ const Scripts = () => {
                     <>
                       <Sparkles className="h-4 w-4" />
                       Generate Script
+                      <span className="ml-2 flex items-center gap-1 text-sm opacity-80">
+                        <Coins className="h-3.5 w-3.5" />
+                        {CREDITS_PER_SCRIPT}
+                      </span>
                     </>
                   )}
                 </Button>

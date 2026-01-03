@@ -4,34 +4,42 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Video,
   Sparkles,
   Play,
   Clock,
   Settings2,
-  Ratio,
-  Volume2,
   Palette,
   ChevronRight,
   Zap,
+  Coins,
 } from "lucide-react";
 import { useState } from "react";
 
 const aspectRatios = [
-  { id: "9:16", name: "9:16", description: "TikTok, Reels" },
-  { id: "16:9", name: "16:9", description: "YouTube" },
-  { id: "1:1", name: "1:1", description: "Square" },
-  { id: "4:5", name: "4:5", description: "Instagram" },
+  { id: "9:16", name: "9:16 (TikTok, Reels)" },
+  { id: "16:9", name: "16:9 (YouTube)" },
+  { id: "1:1", name: "1:1 (Square)" },
+  { id: "4:5", name: "4:5 (Instagram)" },
 ];
 
 const stylePresets = [
-  { id: "cinematic", name: "Cinematic", icon: "🎬" },
-  { id: "anime", name: "Anime", icon: "🎌" },
-  { id: "realistic", name: "Realistic", icon: "📸" },
-  { id: "cartoon", name: "Cartoon", icon: "🎨" },
-  { id: "abstract", name: "Abstract", icon: "✨" },
-  { id: "vintage", name: "Vintage", icon: "📼" },
+  { id: "cinematic", name: "Cinematic", placeholder: "/placeholder.svg" },
+  { id: "anime", name: "Anime", placeholder: "/placeholder.svg" },
+  { id: "realistic", name: "Realistic", placeholder: "/placeholder.svg" },
+  { id: "cartoon", name: "Cartoon", placeholder: "/placeholder.svg" },
+  { id: "abstract", name: "Abstract", placeholder: "/placeholder.svg" },
+  { id: "vintage", name: "Vintage", placeholder: "/placeholder.svg" },
 ];
+
+const CREDITS_PER_VIDEO = 50;
 
 const PromptToVideo = () => {
   const [prompt, setPrompt] = useState("");
@@ -91,7 +99,7 @@ const PromptToVideo = () => {
               </CardContent>
             </Card>
 
-            {/* Style Selection */}
+            {/* Visual Style Selection */}
             <Card className="bg-card border-border">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -101,18 +109,40 @@ const PromptToVideo = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-                  {stylePresets.map((style) => (
+                  {stylePresets.map((style, index) => (
                     <button
                       key={style.id}
                       onClick={() => setSelectedStyle(style.id)}
-                      className={`p-4 rounded-xl border-2 transition-all duration-300 hover:scale-105 ${
+                      className={`relative rounded-xl overflow-hidden border-2 transition-all duration-300 hover:scale-105 aspect-square group ${
                         selectedStyle === style.id
-                          ? "border-primary bg-primary/10"
-                          : "border-border bg-secondary/20 hover:border-primary/50"
+                          ? "border-primary ring-2 ring-primary/30"
+                          : "border-border hover:border-primary/50"
                       }`}
+                      style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      <span className="text-2xl block mb-1">{style.icon}</span>
-                      <span className="text-xs font-medium text-foreground">{style.name}</span>
+                      <div className="absolute inset-0 bg-gradient-to-br from-secondary via-muted to-secondary" />
+                      <img
+                        src={style.placeholder}
+                        alt={style.name}
+                        className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
+                      {/* Animated border */}
+                      {selectedStyle === style.id && (
+                        <div className="absolute inset-0 rounded-xl overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-primary animate-pulse opacity-20" />
+                        </div>
+                      )}
+                      <span className="absolute bottom-1.5 left-0 right-0 text-[10px] font-medium text-foreground text-center">
+                        {style.name}
+                      </span>
+                      {selectedStyle === style.id && (
+                        <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                          <svg className="w-2.5 h-2.5 text-primary-foreground" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -128,28 +158,21 @@ const PromptToVideo = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Aspect Ratio */}
-                <div>
-                  <p className="text-sm font-medium text-foreground mb-3 flex items-center gap-2">
-                    <Ratio className="h-4 w-4 text-muted-foreground" />
-                    Aspect Ratio
-                  </p>
-                  <div className="grid grid-cols-4 gap-3">
-                    {aspectRatios.map((ratio) => (
-                      <button
-                        key={ratio.id}
-                        onClick={() => setSelectedRatio(ratio.id)}
-                        className={`p-3 rounded-lg border-2 transition-all duration-200 ${
-                          selectedRatio === ratio.id
-                            ? "border-primary bg-primary/10"
-                            : "border-border bg-secondary/20 hover:border-primary/50"
-                        }`}
-                      >
-                        <span className="block font-medium text-foreground">{ratio.name}</span>
-                        <span className="text-xs text-muted-foreground">{ratio.description}</span>
-                      </button>
-                    ))}
-                  </div>
+                {/* Aspect Ratio Dropdown */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-foreground">Aspect Ratio</label>
+                  <Select value={selectedRatio} onValueChange={setSelectedRatio}>
+                    <SelectTrigger className="bg-secondary/30 border-border">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {aspectRatios.map((ratio) => (
+                        <SelectItem key={ratio.id} value={ratio.id}>
+                          {ratio.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* Duration */}
@@ -230,11 +253,15 @@ const PromptToVideo = () => {
                     <>
                       <Sparkles className="h-5 w-5" />
                       Generate Video
+                      <span className="ml-2 flex items-center gap-1 text-sm opacity-80">
+                        <Coins className="h-4 w-4" />
+                        {CREDITS_PER_VIDEO}
+                      </span>
                     </>
                   )}
                 </Button>
                 <p className="text-center text-sm text-muted-foreground mt-4">
-                  Estimated time: ~2 minutes • Costs 50 credits
+                  Estimated time: ~2 minutes
                 </p>
               </CardContent>
             </Card>
