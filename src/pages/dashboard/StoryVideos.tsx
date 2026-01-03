@@ -1,7 +1,6 @@
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Clapperboard,
@@ -13,6 +12,7 @@ import {
   Volume2,
   Type,
   Image as ImageIcon,
+  Coins,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -24,21 +24,32 @@ const voiceOptions = [
 ];
 
 const styleOptions = [
-  { id: "cinematic", name: "Cinematic", icon: "🎬" },
-  { id: "minimal", name: "Minimal", icon: "✨" },
-  { id: "dynamic", name: "Dynamic", icon: "⚡" },
-  { id: "storytelling", name: "Storytelling", icon: "📖" },
+  { id: "cinematic", name: "Cinematic", placeholder: "/placeholder.svg" },
+  { id: "minimal", name: "Minimal", placeholder: "/placeholder.svg" },
+  { id: "dynamic", name: "Dynamic", placeholder: "/placeholder.svg" },
+  { id: "storytelling", name: "Storytelling", placeholder: "/placeholder.svg" },
+  { id: "custom", name: "Custom", placeholder: "/placeholder.svg" },
 ];
+
+const CREDITS_PER_VIDEO = 100;
 
 const StoryVideos = () => {
   const [script, setScript] = useState("");
   const [selectedVoice, setSelectedVoice] = useState("female-1");
   const [selectedStyle, setSelectedStyle] = useState("cinematic");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [playingVoice, setPlayingVoice] = useState<string | null>(null);
 
   const handleGenerate = () => {
     setIsGenerating(true);
     setTimeout(() => setIsGenerating(false), 3000);
+  };
+
+  const handlePlayVoice = (voiceId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setPlayingVoice(voiceId);
+    // Simulate voice preview
+    setTimeout(() => setPlayingVoice(null), 2000);
   };
 
   return (
@@ -101,24 +112,42 @@ const StoryVideos = () => {
                     <button
                       key={voice.id}
                       onClick={() => setSelectedVoice(voice.id)}
-                      className={`p-4 rounded-xl border-2 transition-all duration-300 hover:scale-105 ${
+                      className={`relative p-4 rounded-xl border-2 transition-all duration-300 hover:scale-105 ${
                         selectedVoice === voice.id
                           ? "border-primary bg-primary/10"
                           : "border-border bg-secondary/30 hover:border-primary/50"
                       }`}
                     >
-                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center">
+                      <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center relative">
                         <Volume2 className="h-5 w-5 text-primary" />
+                        {/* Play Button Overlay */}
+                        <button
+                          onClick={(e) => handlePlayVoice(voice.id, e)}
+                          className="absolute inset-0 rounded-full bg-background/80 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center"
+                        >
+                          {playingVoice === voice.id ? (
+                            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                          ) : (
+                            <Play className="h-4 w-4 text-primary ml-0.5" />
+                          )}
+                        </button>
                       </div>
                       <p className="font-medium text-foreground">{voice.name}</p>
                       <p className="text-xs text-muted-foreground mt-1">{voice.preview}</p>
+                      {selectedVoice === voice.id && (
+                        <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                          <svg className="w-2.5 h-2.5 text-primary-foreground" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      )}
                     </button>
                   ))}
                 </div>
               </CardContent>
             </Card>
 
-            {/* Style Selection */}
+            {/* Visual Style Selection */}
             <Card className="bg-card border-border">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -127,19 +156,41 @@ const StoryVideos = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {styleOptions.map((style) => (
+                <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
+                  {styleOptions.map((style, index) => (
                     <button
                       key={style.id}
                       onClick={() => setSelectedStyle(style.id)}
-                      className={`p-4 rounded-xl border-2 transition-all duration-300 hover:scale-105 ${
+                      className={`relative rounded-xl overflow-hidden border-2 transition-all duration-300 hover:scale-105 aspect-[4/3] group ${
                         selectedStyle === style.id
-                          ? "border-primary bg-primary/10"
-                          : "border-border bg-secondary/30 hover:border-primary/50"
+                          ? "border-primary ring-2 ring-primary/30"
+                          : "border-border hover:border-primary/50"
                       }`}
+                      style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      <span className="text-3xl mb-2 block">{style.icon}</span>
-                      <p className="font-medium text-foreground">{style.name}</p>
+                      <div className="absolute inset-0 bg-gradient-to-br from-secondary via-muted to-secondary" />
+                      <img
+                        src={style.placeholder}
+                        alt={style.name}
+                        className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" />
+                      {/* Animated border for selected */}
+                      {selectedStyle === style.id && (
+                        <div className="absolute inset-0 rounded-xl overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-primary animate-pulse opacity-20" />
+                        </div>
+                      )}
+                      <span className="absolute bottom-2 left-0 right-0 text-xs font-medium text-foreground text-center">
+                        {style.name}
+                      </span>
+                      {selectedStyle === style.id && (
+                        <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                          <svg className="w-2.5 h-2.5 text-primary-foreground" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -192,6 +243,10 @@ const StoryVideos = () => {
                     <>
                       <Sparkles className="h-4 w-4" />
                       Generate Video
+                      <span className="ml-2 flex items-center gap-1 text-sm opacity-80">
+                        <Coins className="h-3.5 w-3.5" />
+                        {CREDITS_PER_VIDEO}
+                      </span>
                     </>
                   )}
                 </Button>

@@ -4,14 +4,15 @@ import { Button } from "@/components/ui/button";
 import {
   CreditCard,
   Coins,
-  TrendingUp,
   Calendar,
   Download,
   Plus,
-  Check,
-  Zap,
-  Crown,
-  Star,
+  Video,
+  Image,
+  FileText,
+  Clapperboard,
+  Repeat,
+  Sparkles,
 } from "lucide-react";
 
 const currentPlan = {
@@ -23,38 +24,54 @@ const currentPlan = {
   renewsOn: "January 15, 2024",
 };
 
-const creditPacks = [
-  { id: 1, credits: 1000, price: 9, popular: false },
-  { id: 2, credits: 3000, price: 24, popular: true, savings: "20%" },
-  { id: 3, credits: 5000, price: 35, popular: false, savings: "30%" },
-  { id: 4, credits: 10000, price: 60, popular: false, savings: "40%" },
-];
-
-const plans = [
+const creditFeatures = [
   {
-    name: "Starter",
-    price: "$9",
-    period: "month",
-    credits: 1000,
-    features: ["1,000 credits/month", "Basic templates", "720p exports", "Email support"],
-    current: false,
+    icon: Clapperboard,
+    title: "Story Videos",
+    credits: 100,
+    description: "Generate a complete story video with AI visuals and voiceover",
+    color: "from-primary/20 to-primary/5",
+    iconColor: "text-primary",
   },
   {
-    name: "Pro",
-    price: "$29",
-    period: "month",
-    credits: 5000,
-    features: ["5,000 credits/month", "All templates", "1080p exports", "Priority support", "Series automation"],
-    current: true,
-    popular: true,
+    icon: Repeat,
+    title: "Series Episode",
+    credits: 80,
+    description: "Create an automated series episode with consistent branding",
+    color: "from-accent/20 to-accent/5",
+    iconColor: "text-accent",
   },
   {
-    name: "Business",
-    price: "$79",
-    period: "month",
-    credits: 15000,
-    features: ["15,000 credits/month", "Custom branding", "4K exports", "API access", "Dedicated manager", "Team collaboration"],
-    current: false,
+    icon: Video,
+    title: "Prompt to Video",
+    credits: 50,
+    description: "Transform a text prompt into a short AI-generated video",
+    color: "from-violet-500/20 to-violet-500/5",
+    iconColor: "text-violet-500",
+  },
+  {
+    icon: Image,
+    title: "AI Image",
+    credits: 5,
+    description: "Generate a single AI image from your text description",
+    color: "from-emerald-500/20 to-emerald-500/5",
+    iconColor: "text-emerald-500",
+  },
+  {
+    icon: FileText,
+    title: "Script Generation",
+    credits: 10,
+    description: "AI-powered script writing for your videos",
+    color: "from-amber-500/20 to-amber-500/5",
+    iconColor: "text-amber-500",
+  },
+  {
+    icon: Sparkles,
+    title: "Voice Synthesis",
+    credits: 15,
+    description: "Convert text to realistic AI voiceover per minute",
+    color: "from-rose-500/20 to-rose-500/5",
+    iconColor: "text-rose-500",
   },
 ];
 
@@ -80,49 +97,25 @@ const Billing = () => {
             <h1 className="text-3xl font-bold text-foreground">Billing</h1>
           </div>
           <p className="text-muted-foreground">
-            Manage your subscription, credits, and payment methods
+            Manage your credits and view billing history
           </p>
         </div>
 
-        {/* Current Plan & Credits */}
+        {/* Current Credits */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Card className="bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary/20">
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <Crown className="h-5 w-5 text-primary" />
-                    <span className="text-sm font-medium text-primary">Current Plan</span>
+                    <Coins className="h-5 w-5 text-primary" />
+                    <span className="text-sm font-medium text-primary">Available Credits</span>
                   </div>
-                  <h2 className="text-3xl font-bold text-foreground">{currentPlan.name}</h2>
-                  <p className="text-muted-foreground">
-                    {currentPlan.price}/{currentPlan.period}
-                  </p>
-                </div>
-                <Button variant="outline" size="sm" className="border-primary/30 hover:bg-primary/10">
-                  Change Plan
-                </Button>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Calendar className="h-4 w-4" />
-                Renews on {currentPlan.renewsOn}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-card border-border">
-            <CardContent className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <Coins className="h-5 w-5 text-accent" />
-                    <span className="text-sm font-medium text-muted-foreground">Available Credits</span>
-                  </div>
-                  <h2 className="text-3xl font-bold text-foreground">
+                  <h2 className="text-4xl font-bold text-foreground">
                     {(currentPlan.credits - currentPlan.usedCredits).toLocaleString()}
                   </h2>
-                  <p className="text-muted-foreground">
-                    of {currentPlan.credits.toLocaleString()} credits
+                  <p className="text-muted-foreground mt-1">
+                    of {currentPlan.credits.toLocaleString()} credits this period
                   </p>
                 </div>
                 <Button variant="hero" size="sm" className="gap-1">
@@ -131,101 +124,79 @@ const Billing = () => {
                 </Button>
               </div>
               <div className="space-y-2">
-                <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                <div className="h-3 bg-secondary rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gradient-to-r from-primary to-accent rounded-full transition-all duration-500"
                     style={{ width: `${100 - creditPercentage}%` }}
                   />
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  {currentPlan.usedCredits.toLocaleString()} credits used this billing period
+                <div className="flex items-center justify-between text-sm text-muted-foreground">
+                  <span>{currentPlan.usedCredits.toLocaleString()} credits used</span>
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    Renews {currentPlan.renewsOn}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-card border-border">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-1">Current Plan</p>
+                  <h2 className="text-2xl font-bold text-foreground">{currentPlan.name}</h2>
+                  <p className="text-muted-foreground">
+                    {currentPlan.price}/{currentPlan.period}
+                  </p>
+                </div>
+                <Button variant="outline" size="sm">
+                  Upgrade Plan
+                </Button>
+              </div>
+              <div className="pt-4 border-t border-border">
+                <p className="text-sm text-muted-foreground">
+                  Need more credits? Upgrade your plan or purchase additional credit packs.
                 </p>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Credit Packs */}
+        {/* Credit Usage Guide */}
         <Card className="bg-card border-border mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Zap className="h-5 w-5 text-primary" />
-              Buy Credit Packs
+              <Sparkles className="h-5 w-5 text-primary" />
+              Credit Usage Guide
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              {creditPacks.map((pack) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {creditFeatures.map((feature, index) => (
                 <div
-                  key={pack.id}
-                  className={`relative p-6 rounded-xl border-2 transition-all duration-300 hover:scale-105 cursor-pointer ${
-                    pack.popular
-                      ? "border-primary bg-primary/5"
-                      : "border-border bg-secondary/20 hover:border-primary/50"
-                  }`}
+                  key={feature.title}
+                  className={`relative p-5 rounded-xl bg-gradient-to-br ${feature.color} border border-border hover:border-primary/30 transition-all duration-300 hover:scale-[1.02] group`}
+                  style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  {pack.popular && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-primary-foreground text-xs font-medium rounded-full">
-                      Most Popular
+                  <div className="flex items-start gap-4">
+                    <div className={`p-2.5 rounded-xl bg-background/50 ${feature.iconColor}`}>
+                      <feature.icon className="h-5 w-5" />
                     </div>
-                  )}
-                  <div className="text-center">
-                    <Coins className="h-8 w-8 mx-auto mb-3 text-primary" />
-                    <p className="text-2xl font-bold text-foreground">{pack.credits.toLocaleString()}</p>
-                    <p className="text-sm text-muted-foreground mb-3">credits</p>
-                    <p className="text-xl font-bold text-foreground">${pack.price}</p>
-                    {pack.savings && (
-                      <p className="text-xs text-green-400 mt-1">Save {pack.savings}</p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Available Plans */}
-        <Card className="bg-card border-border mb-8">
-          <CardHeader>
-            <CardTitle>Available Plans</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {plans.map((plan) => (
-                <div
-                  key={plan.name}
-                  className={`relative p-6 rounded-xl border-2 transition-all duration-300 ${
-                    plan.current
-                      ? "border-primary bg-primary/5"
-                      : "border-border bg-secondary/10 hover:border-primary/50"
-                  }`}
-                >
-                  {plan.popular && (
-                    <div className="absolute -top-3 right-4 px-3 py-1 bg-accent text-accent-foreground text-xs font-medium rounded-full flex items-center gap-1">
-                      <Star className="h-3 w-3" />
-                      Popular
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <h3 className="font-semibold text-foreground">{feature.title}</h3>
+                        <div className="flex items-center gap-1 text-primary font-bold">
+                          <Coins className="h-3.5 w-3.5" />
+                          {feature.credits}
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {feature.description}
+                      </p>
                     </div>
-                  )}
-                  <h3 className="text-xl font-bold text-foreground mb-1">{plan.name}</h3>
-                  <div className="mb-4">
-                    <span className="text-3xl font-bold text-foreground">{plan.price}</span>
-                    <span className="text-muted-foreground">/{plan.period}</span>
                   </div>
-                  <ul className="space-y-2 mb-6">
-                    {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                  <Button
-                    variant={plan.current ? "secondary" : "hero"}
-                    className="w-full"
-                    disabled={plan.current}
-                  >
-                    {plan.current ? "Current Plan" : "Upgrade"}
-                  </Button>
                 </div>
               ))}
             </div>

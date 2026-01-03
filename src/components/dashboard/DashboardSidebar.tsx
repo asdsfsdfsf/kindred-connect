@@ -14,11 +14,17 @@ import {
   Repeat,
   Clapperboard,
   Coins,
+  Bell,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import StoryShortLogo from "@/components/StoryShortLogo";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const mainNavItems = [
   { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
@@ -40,10 +46,17 @@ const bottomNavItems = [
   { title: "Help & Support", icon: HelpCircle, href: "/dashboard/support" },
 ];
 
+const notifications = [
+  { id: 1, title: "New Feature: Series Automation", message: "Create automated video series with consistent branding.", time: "2 hours ago", unread: true },
+  { id: 2, title: "Credits Added", message: "Your monthly credits have been refreshed.", time: "1 day ago", unread: true },
+  { id: 3, title: "Video Ready", message: "Your AI video 'Product Launch' is ready to download.", time: "3 days ago", unread: false },
+];
+
 const DashboardSidebar = () => {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const availableCredits = 2450;
+  const unreadCount = notifications.filter(n => n.unread).length;
 
   const isActive = (href: string) => location.pathname === href;
 
@@ -131,6 +144,55 @@ const DashboardSidebar = () => {
 
       {/* Bottom Navigation */}
       <div className="py-4 px-2 border-t border-border space-y-1">
+        {/* Notifications */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <button
+              className={cn(
+                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:translate-x-1 w-full",
+                "text-muted-foreground hover:bg-muted hover:text-foreground relative"
+              )}
+            >
+              <div className="relative">
+                <Bell className="h-5 w-5 flex-shrink-0" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
+                    {unreadCount}
+                  </span>
+                )}
+              </div>
+              {!collapsed && <span>Notifications</span>}
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80 p-0" side="right" align="end">
+            <div className="p-4 border-b border-border">
+              <h3 className="font-semibold text-foreground">Notifications</h3>
+            </div>
+            <div className="max-h-80 overflow-y-auto">
+              {notifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  className={cn(
+                    "p-4 border-b border-border last:border-0 hover:bg-secondary/50 transition-colors cursor-pointer",
+                    notification.unread && "bg-primary/5"
+                  )}
+                >
+                  <div className="flex items-start gap-3">
+                    {notification.unread && (
+                      <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                    )}
+                    <div className={cn(!notification.unread && "ml-5")}>
+                      <p className="font-medium text-foreground text-sm">{notification.title}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{notification.message}</p>
+                      <p className="text-xs text-muted-foreground mt-2">{notification.time}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </PopoverContent>
+        </Popover>
+
         {bottomNavItems.map((item) => (
           <Link
             key={item.href}

@@ -4,11 +4,10 @@ import { Button } from "@/components/ui/button";
 import {
   Video,
   Sparkles,
-  TrendingUp,
-  Clock,
   Play,
   Plus,
   Zap,
+  Repeat,
 } from "lucide-react";
 
 const statsCards = [
@@ -27,18 +26,11 @@ const statsCards = [
     color: "text-accent",
   },
   {
-    title: "Total Views",
-    value: "12.4K",
-    change: "+45%",
-    icon: TrendingUp,
-    color: "text-green-500",
-  },
-  {
-    title: "Hours Saved",
-    value: "48h",
-    change: "+8%",
-    icon: Clock,
-    color: "text-yellow-500",
+    title: "Series Created",
+    value: "8",
+    change: "+3",
+    icon: Repeat,
+    color: "text-emerald-500",
   },
 ];
 
@@ -98,7 +90,7 @@ const Dashboard = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           {statsCards.map((stat) => (
             <Card key={stat.title} className="bg-card border-border">
               <CardContent className="p-6">
